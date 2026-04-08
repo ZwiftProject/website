@@ -38,7 +38,9 @@
 html, body { 
   scroll-behavior: smooth !important;
   scrollbar-width: none; 
-  -ms-overflow-style: none; 
+  -ms-overflow-style: none;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 ::-webkit-scrollbar { display: none; }
@@ -103,7 +105,7 @@ h3 { font-size: clamp(1.2rem, 1.5vw + 1rem, 2rem); margin-bottom: 0.5rem; }
 .reveal-wipe.active { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 
 /* Layout & Sections */
-section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 auto; }
+section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 auto; width: 100%; }
 
 /* Buttons */
 .btn {
@@ -260,7 +262,7 @@ section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 
 
 /* Footer */
 footer { position: relative; padding: 120px 20px; text-align: center; overflow: hidden; border-top: 1px solid #111;}
-.footer-bg-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-display); font-size: clamp(6rem, 15vw, 15rem); color: rgba(255,255,255,0.02); font-weight: 900; z-index: 0; pointer-events: none; white-space: nowrap; }
+.footer-bg-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-display); font-size: clamp(4rem, 15vw, 15rem); color: rgba(255,255,255,0.02); font-weight: 900; z-index: 0; pointer-events: none; white-space: nowrap; overflow: hidden; max-width: 100vw; }
 .footer-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 15px;}
 .footer-logo-canvas { margin-bottom: 20px; width: 60px; height: 60px; }
 .footer-tag { color: var(--text-muted); font-style: italic; }
@@ -286,8 +288,9 @@ footer { position: relative; padding: 120px 20px; text-align: center; overflow: 
 .floor-boss-name { font-family:var(--font-display); font-size:1.1rem; font-weight:700; }
 
 /* ---- PROCESS STEPS TABS ---- */
-.steps-tabs { display:flex; gap:0; margin-bottom:0; border-bottom:1px solid var(--surface-2); overflow-x:auto; }
-.step-tab { font-family:var(--font-display); font-size:.8rem; padding:14px 24px; background:transparent; border:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; white-space:nowrap; }
+.steps-tabs { display:flex; gap:0; margin-bottom:0; border-bottom:1px solid var(--surface-2); overflow-x:auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.steps-tabs::-webkit-scrollbar { display: none; }
+.step-tab { font-family:var(--font-display); font-size:.8rem; padding:14px 18px; background:transparent; border:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; white-space:nowrap; flex-shrink: 0; }
 .step-tab:hover { color:var(--text); }
 .step-tab.active { color:var(--cyan); border-bottom-color:var(--cyan); }
 .steps-panels { background:var(--surface); border:1px solid var(--surface-2); border-top:none; }
