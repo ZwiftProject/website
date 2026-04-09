@@ -38,7 +38,9 @@
 html, body { 
   scroll-behavior: smooth !important;
   scrollbar-width: none; 
-  -ms-overflow-style: none; 
+  -ms-overflow-style: none;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 ::-webkit-scrollbar { display: none; }
@@ -103,7 +105,7 @@ h3 { font-size: clamp(1.2rem, 1.5vw + 1rem, 2rem); margin-bottom: 0.5rem; }
 .reveal-wipe.active { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 
 /* Layout & Sections */
-section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 auto; }
+section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 auto; width: 100%; }
 
 /* Buttons */
 .btn {
@@ -163,7 +165,27 @@ section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 
 .loop-trail { fill: #fff; opacity: 0; }
 .loop-pulse { fill: none; stroke: #fff; stroke-width: 1; opacity: 0; }
 @keyframes pulsering { 0% { r: 30; opacity: 0.6; } 100% { r: 50; opacity: 0; } }
-@media(max-width: 768px){ .loop-svg { display: none; } }
+.loop-container { position: relative; margin: 40px 0; }
+.loop-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+/* Loop cards for mobile-first design */
+.loop-cards { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; margin: 0; }
+.loop-card { display: flex; flex-direction: column; align-items: center; position: relative; padding-bottom: 8px; }
+.loop-card:not(:last-child)::after { content: ''; position: absolute; top: 36px; left: calc(50% + 36px); width: calc(100% - 72px); height: 2px; background: rgba(255,255,255,0.1); }
+.loop-card-icon { width: 72px; height: 72px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; background: var(--surface); color: rgba(255,255,255,0.3); transition: all 0.5s; position: relative; z-index: 1; flex-shrink: 0; }
+.loop-card-icon svg { width: 28px; height: 28px; }
+.loop-card.active .loop-card-icon { border-color: rgba(255,255,255,0.9); color: #fff; box-shadow: 0 0 24px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.15); background: rgba(255,255,255,0.1); }
+.loop-card-step { font-family: var(--font-display); font-size: 0.6rem; letter-spacing: 2px; color: rgba(255,255,255,0.3); margin-top: 12px; text-align: center; line-height: 1.4; transition: color 0.5s; }
+.loop-card.active .loop-card-step { color: #fff; }
+
+@media (max-width: 800px) {
+  .loop-cards { grid-template-columns: repeat(4, 1fr); gap: 20px 0; row-gap: 50px; }
+  .loop-card:not(:last-child)::after { display: none; }
+  .loop-card-icon { width: 64px; height: 64px; }
+}
+@media (max-width: 480px) {
+  .loop-cards { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .loop-card-icon { width: 58px; height: 58px; }
+}
 
 /* Characters Section */
 .characters-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
@@ -202,11 +224,11 @@ section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 
 
 /* Map Section */
 .map-container { display: flex; flex-direction: column; align-items: center; background: var(--surface); padding: 0; border: 1px solid var(--surface-2); position: relative; overflow: hidden; width: 100%; }
-#dungeon-canvas { background: var(--bg); cursor: none; width: 100%; height: auto; border: none; }
+#dungeon-canvas { background: var(--bg); cursor: none; width: 100%; max-width: 600px; height: auto; border: none; display: block; }
 .map-legend { display: flex; gap: 20px; margin: 20px 0; font-family: var(--font-display); font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap; justify-content: center;}
 .legend-item { display: flex; align-items: center; gap: 8px; }
 .legend-box { width: 14px; height: 14px; border: 1px solid; }
-#reset-map-btn { position: absolute; bottom: 20px; right: 20px; font-size: 0.8rem; padding: 6px 12px; z-index: 10; }
+#reset-map-btn { margin: 20px auto; font-size: 0.8rem; padding: 10px 20px; z-index: 10; width: fit-content; }
 
 /* Tooltip */
 #map-tooltip { position: fixed; background: rgba(12,12,24,0.95); border: 1px solid var(--cyan); padding: 10px 15px; color: #fff; font-size: 0.85rem; pointer-events: none; z-index: 1000; opacity: 0; transition: opacity 0.2s; font-family: var(--font-display); transform: translate(-50%, -105%);}
@@ -239,8 +261,8 @@ section { padding: 100px 20px; position: relative; max-width: 1200px; margin: 0 
 @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 
 /* Footer */
-footer { position: relative; padding: 120px 20px; text-align: center; overflow: hidden; border-top: 1px solid #111;}
-.footer-bg-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-display); font-size: clamp(6rem, 15vw, 15rem); color: rgba(255,255,255,0.02); font-weight: 900; z-index: 0; pointer-events: none; white-space: nowrap; }
+footer { position: relative; padding: 120px 20px; text-align: center; overflow: hidden; border-top: 1px solid #111; max-width: 100%; }
+.footer-bg-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-display); font-size: clamp(4rem, 15vw, 15rem); color: rgba(255,255,255,0.02); font-weight: 900; z-index: 0; pointer-events: none; white-space: nowrap; overflow: hidden; max-width: 100vw; }
 .footer-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 15px;}
 .footer-logo-canvas { margin-bottom: 20px; width: 60px; height: 60px; }
 .footer-tag { color: var(--text-muted); font-style: italic; }
@@ -266,8 +288,9 @@ footer { position: relative; padding: 120px 20px; text-align: center; overflow: 
 .floor-boss-name { font-family:var(--font-display); font-size:1.1rem; font-weight:700; }
 
 /* ---- PROCESS STEPS TABS ---- */
-.steps-tabs { display:flex; gap:0; margin-bottom:0; border-bottom:1px solid var(--surface-2); overflow-x:auto; }
-.step-tab { font-family:var(--font-display); font-size:.8rem; padding:14px 24px; background:transparent; border:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; white-space:nowrap; }
+.steps-tabs { display:flex; gap:0; margin-bottom:0; border-bottom:1px solid var(--surface-2); overflow-x:auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.steps-tabs::-webkit-scrollbar { display: none; }
+.step-tab { font-family:var(--font-display); font-size:.8rem; padding:14px 18px; background:transparent; border:none; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; white-space:nowrap; flex-shrink: 0; }
 .step-tab:hover { color:var(--text); }
 .step-tab.active { color:var(--cyan); border-bottom-color:var(--cyan); }
 .steps-panels { background:var(--surface); border:1px solid var(--surface-2); border-top:none; }
@@ -312,6 +335,37 @@ footer { position: relative; padding: 120px 20px; text-align: center; overflow: 
 
 .upgrade-icon { animation: floatIcon 3s ease-in-out infinite; }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* --- Mobile Overrides --- */
+@media (max-width: 800px) {
+  h1 { font-size: clamp(2.5rem, 12vw, 4rem); }
+  h2 { margin-bottom: 1.5rem; font-size: 2.2rem; }
+  section { padding: 40px 20px; }
+  
+  .about-grid, .pitch-container { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+  .stat-pills { align-items: center; }
+  .stat-pill { width: 100%; max-width: 400px; }
+  
+  .hero-ctas { flex-direction: column; width: 100%; max-width: 280px; margin: 0 auto; gap: 12px; }
+  .btn { width: 100%; }
+  
+  .char-card-wrap { height: auto; min-height: 440px; }
+  .stat-row { justify-content: space-between; gap: 10px; }
+  .stat-dots { letter-spacing: 1px; }
+  
+  .map-legend { gap: 10px; flex-direction: column; align-items: flex-start; width: fit-content; margin: 20px auto; padding: 0; }
+  
+  .step-panel, .planmd-content { padding: 20px; }
+  .step-panel code { font-size: 0.7rem; padding: 10px; }
+  
+  #audio-toggle { display: none; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 2.5rem; }
+  .hero-tag { font-size: 1rem; margin-bottom: 30px; }
+  .hero-label { display: none; }
+}
 </style>
     
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -381,11 +435,9 @@ footer { position: relative; padding: 120px 20px; text-align: center; overflow: 
 <section id="loop">
 <!-- LOOP -->
 <h2 class="orb reveal reveal-wipe">HOW IT PLAYS</h2>
-<div class="loop-container reveal">
-    <svg class="loop-svg" viewBox="0 0 1000 160">
-        <!-- SVG content will be generated by JS -->
-    </svg>
-    <!-- Fallback for mobile will be handled in CSS/JS if needed, but SVG scales well -->
+<div class="loop-container reveal" style="padding: 20px 0 10px;">
+    <div class="loop-cards" id="loop-cards-grid"></div>
+    <canvas class="loop-overlay" id="loop-canvas"></canvas>
 </div>
 </section>
 <section id="characters">
@@ -402,7 +454,6 @@ footer { position: relative; padding: 120px 20px; text-align: center; overflow: 
 <h2 class="orb reveal reveal-wipe">THE DUNGEON</h2>
 <div class="map-container reveal">
     <canvas id="dungeon-canvas" width="600" height="600"></canvas>
-    <button class="btn btn-primary" id="reset-map-btn">RESET MAP</button>
 </div>
 <div class="map-legend reveal">
     <div class="legend-item"><div class="legend-box" style="border-color:var(--cyan)"></div>COMBAT ROOM</div>
@@ -1087,8 +1138,7 @@ function finishDraw(ctx, hex) {
 
 
 function initData() {
-    // Loop Map — enhanced with icons + traveling arrow
-    const loopSvg = document.querySelector('.loop-svg');
+    const loopGrid = document.getElementById('loop-cards-grid');
     const nodes = [
         { label: 'EXPLORE',     icon: 'map' },
         { label: 'ENTER ROOM',  icon: 'door-open' },
@@ -1098,139 +1148,154 @@ function initData() {
         { label: 'NEXT ROOM',   icon: 'move-right' },
         { label: 'BOSS',        icon: 'skull' }
     ];
-    const w = 1000, h = 220, cy = 90;
-    const hexR = 32;
-    let svgHtml = '';
-    const gap = (w - 100) / 6;
-    const nodeXs = nodes.map((_, i) => 50 + i * gap);
 
-    // Lines between nodes
-    for (let i = 0; i < 6; i++) {
-        svgHtml += `<line class="loop-line" x1="${nodeXs[i] + hexR + 5}" y1="${cy}" x2="${nodeXs[i+1] - hexR - 5}" y2="${cy}" />`;
+    loopGrid.innerHTML = nodes.map((nd, i) => `
+        <div class="loop-card" id="loop-card-${i}">
+            <div class="loop-card-icon"><i data-lucide="${nd.icon}"></i></div>
+            <div class="loop-card-step">${nd.label}</div>
+        </div>
+    `).join('');
+    lucide.createIcons();
+
+    // --- Arrow animation on canvas overlay ---
+    const canvas = document.getElementById('loop-canvas');
+    const ctx2 = canvas.getContext('2d');
+    const cards = document.querySelectorAll('.loop-card');
+    let nodePositions = [];
+
+    function refreshPositions() {
+        const containerRect = canvas.parentElement.getBoundingClientRect();
+        nodePositions = Array.from(cards).map(card => {
+            const iconEl = card.querySelector('.loop-card-icon');
+            const r = iconEl.getBoundingClientRect();
+            return {
+                x: r.left - containerRect.left + r.width / 2,
+                y: r.top - containerRect.top + r.height / 2
+            };
+        });
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
     }
 
-    // Hexagons + icons + labels
-    nodes.forEach((nd, i) => {
-        let x = nodeXs[i];
-        let pts = '';
-        for (let a = 0; a < 6; a++) { let th = Math.PI / 3 * a; pts += `${x + hexR * Math.cos(th)},${cy + hexR * Math.sin(th)} `; }
-        svgHtml += `<polygon class="loop-node" points="${pts}" transform="rotate(30 ${x} ${cy})" />`;
-        // Icon inside hexagon using foreignObject to leverage Lucide library
-        svgHtml += `<foreignObject x="${x - 18}" y="${cy - 18}" width="36" height="36">
-            <div class="loop-icon-container">
-                <i data-lucide="${nd.icon}" style="width:22px; height:22px;"></i>
-            </div>
-        </foreignObject>`;
-        // Label below
-        svgHtml += `<text class="loop-text" x="${x}" y="${cy + hexR + 22}">${nd.label}</text>`;
-    });
-
-    // Arrow player indicator with trail
-    svgHtml += `<g id="loop-trails"></g>`;
-    for(let i=0; i<8; i++) {
-        svgHtml += `<circle class="loop-trail" cx="0" cy="0" r="${4 - i*0.4}" />`;
-    }
-    svgHtml += `<g class="loop-player" id="loop-arrow">`;
-    svgHtml += `<path d="M-6,-6 L8,0 L-6,6 L-3,0 Z" fill="#fff" transform="scale(1.2)">
-        <animateTransform attributeName="transform" type="scale" values="1.2;1.5;1.2" dur="0.8s" repeatCount="indefinite" additive="sum"/>
-    </path>`;
-    svgHtml += `<circle cx="0" cy="0" r="18" fill="none" stroke="#fff" stroke-width="1" opacity="0.3">
-        <animate attributeName="r" values="14;26;14" dur="1.5s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.4;0;0.4" dur="1.5s" repeatCount="indefinite"/>
-    </circle>`;
-    svgHtml += `</g>`;
-
-    // Pulse ring (appears on active node)
-    svgHtml += `<circle class="loop-pulse" id="loop-pulse-ring" cx="0" cy="0" r="30" />`;
-
-    loopSvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-    loopSvg.innerHTML = svgHtml;
-
-    // Animate the arrow traveling across nodes
-    let loopArrow = document.getElementById('loop-arrow');
-    let loopPulse = document.getElementById('loop-pulse-ring');
-    let trails = [];
-    let trailTimer = 0;
-    
+    // Arrow travel state
+    let arrowX = 0, arrowY = 0;
+    let arrowAngle = 0;
     let currentNode = 0;
-    let arrowProgress = 0; // 0-1 between current and next node
-    let arrowPaused = 120; // initial pause
-    const arrowSpeed = 0.008; // slower, smoother
-    const pauseDuration = 100; // frames to pause at each node
+    let nextNode = 1;
+    let progress = 0;      // 0..1 between nodes
+    let paused = 90;       // frames paused at node
+    const SPEED = 0.012;
+    const PAUSE = 80;
+    const trail = [];
+    const TRAIL_LEN = 18;
 
-    function animateArrow() {
-        if (arrowPaused > 0) {
-            arrowPaused--;
-            let nx = nodeXs[currentNode];
-            loopArrow.setAttribute('transform', `translate(${nx}, ${cy}) rotate(0)`);
+    function drawArrowShape(ctx, x, y, angle, scale) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.scale(scale, scale);
+        ctx.beginPath();
+        ctx.moveTo(10, 0);
+        ctx.lineTo(-8, 7);
+        ctx.lineTo(-4, 0);
+        ctx.lineTo(-8, -7);
+        ctx.closePath();
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 16;
+        ctx.fill();
+        ctx.restore();
+    }
 
-            // Pulse ring logic
-            loopPulse.setAttribute('cx', nx);
-            loopPulse.setAttribute('cy', cy);
-            let pScale = 1 - (arrowPaused / pauseDuration);
-            let pR = 30 + pScale * 25;
-            let pO = 0.6 * (1 - pScale);
-            loopPulse.setAttribute('r', Math.max(0, pR));
-            loopPulse.style.opacity = Math.max(0, pO);
+    function activateCard(idx) {
+        cards.forEach(c => c.classList.remove('active'));
+        cards[idx].classList.add('active');
+    }
+    activateCard(0);
 
-            // Hide trails
-            document.querySelectorAll('.loop-trail').forEach(tr => tr.style.opacity = 0);
+    function animateLoop() {
+        if (!nodePositions.length) { requestAnimationFrame(animateLoop); return; }
 
-            // Highlight current node
-            document.querySelectorAll('.loop-node').forEach((nn, i) => nn.classList.toggle('highlight', i === currentNode));
-            document.querySelectorAll('.loop-text').forEach((nn, i) => nn.classList.toggle('highlight', i === currentNode));
-            document.querySelectorAll('.loop-icon-container').forEach((nn, i) => nn.classList.toggle('highlight', i === currentNode));
-            document.querySelectorAll('.loop-line').forEach((ll, i) => ll.classList.toggle('highlight', i === currentNode - 1));
+        ctx2.clearRect(0, 0, canvas.width, canvas.height);
 
-            if (arrowPaused === 0) {
-                arrowProgress = 0;
-                document.querySelectorAll('.loop-node').forEach(nn => nn.classList.remove('highlight'));
-                document.querySelectorAll('.loop-text').forEach(nn => nn.classList.remove('highlight'));
-                document.querySelectorAll('.loop-icon-container').forEach(nn => nn.classList.remove('highlight'));
-                document.querySelectorAll('.loop-line').forEach(ll => ll.classList.remove('highlight'));
+        if (paused > 0) {
+            // Sitting on node
+            paused--;
+            arrowX = nodePositions[currentNode].x;
+            arrowY = nodePositions[currentNode].y;
+
+            // Pulse ring
+            const pFrac = 1 - paused / PAUSE;
+            const pR = 36 + pFrac * 28;
+            const pA = 0.5 * (1 - pFrac);
+            ctx2.beginPath();
+            ctx2.arc(arrowX, arrowY, pR, 0, Math.PI * 2);
+            ctx2.strokeStyle = `rgba(255,255,255,${pA})`;
+            ctx2.lineWidth = 1.5;
+            ctx2.stroke();
+
+            if (paused === 0) {
+                progress = 0;
+                nextNode = (currentNode + 1) % nodes.length;
+                if (nextNode === 0) { paused = PAUSE; currentNode = 0; activateCard(0); requestAnimationFrame(animateLoop); return; }
+                const dx = nodePositions[nextNode].x - arrowX;
+                const dy = nodePositions[nextNode].y - arrowY;
+                arrowAngle = Math.atan2(dy, dx);
             }
         } else {
-            let nextNode = (currentNode + 1) % nodes.length;
-            
-            if (nextNode === 0) {
-                currentNode = 0;
-                arrowPaused = pauseDuration;
-                arrowProgress = 0;
-            } else {
-                arrowProgress += arrowSpeed;
-                if (arrowProgress >= 1) {
-                    currentNode = nextNode;
-                    arrowPaused = pauseDuration;
-                    arrowProgress = 0;
-                } else {
-                    let fromX = nodeXs[currentNode];
-                    let toX = nodeXs[nextNode];
-                    let ax = fromX + (toX - fromX) * arrowProgress;
-                    loopArrow.setAttribute('transform', `translate(${ax}, ${cy}) rotate(0)`);
-                    loopPulse.style.opacity = 0;
-                    
-                    // Update trails
-                    trailTimer++;
-                    if(trailTimer % 2 === 0) {
-                        trails.unshift({x: ax, y: cy});
-                        if(trails.length > 8) trails.pop();
-                    }
-                    
-                    let trailEls = document.querySelectorAll('.loop-trail');
-                    trails.forEach((pos, idx) => {
-                        if(trailEls[idx]) {
-                            trailEls[idx].setAttribute('cx', pos.x);
-                            trailEls[idx].setAttribute('cy', pos.y);
-                            trailEls[idx].style.opacity = 0.8 - (idx / 8);
-                        }
-                    });
+            // Travelling
+            progress = Math.min(1, progress + SPEED);
+            const ease = progress < 0.5 ? 2*progress*progress : -1+(4-2*progress)*progress;
+            const from = nodePositions[currentNode];
+            const to   = nodePositions[nextNode];
+            arrowX = from.x + (to.x - from.x) * ease;
+            arrowY = from.y + (to.y - from.y) * ease;
 
-                    document.querySelectorAll('.loop-line').forEach((ll, i) => ll.classList.toggle('highlight', i === currentNode));
-                }
+            // Draw path line
+            ctx2.beginPath();
+            ctx2.moveTo(from.x, from.y);
+            ctx2.lineTo(to.x, to.y);
+            ctx2.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx2.lineWidth = 2;
+            ctx2.setLineDash([6, 6]);
+            ctx2.stroke();
+            ctx2.setLineDash([]);
+
+            if (progress >= 1) {
+                currentNode = nextNode;
+                paused = PAUSE;
+                activateCard(currentNode);
+                trail.length = 0;
             }
         }
-        requestAnimationFrame(animateArrow);
+
+        // Trail
+        trail.unshift({ x: arrowX, y: arrowY });
+        if (trail.length > TRAIL_LEN) trail.pop();
+        trail.forEach((pt, i) => {
+            const a = (1 - i / TRAIL_LEN) * 0.55;
+            const r = 4 * (1 - i / TRAIL_LEN);
+            ctx2.beginPath();
+            ctx2.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+            ctx2.fillStyle = `rgba(255,255,255,${a})`;
+            ctx2.fill();
+        });
+
+        // Arrow shape
+        const pulse = 1 + 0.08 * Math.sin(Date.now() * 0.005);
+        drawArrowShape(ctx2, arrowX, arrowY, arrowAngle, pulse);
+
+        requestAnimationFrame(animateLoop);
     }
+
+    // Init after DOM renders
+    setTimeout(() => {
+        refreshPositions();
+        arrowX = nodePositions[0].x;
+        arrowY = nodePositions[0].y;
+        animateLoop();
+    }, 200);
+    window.addEventListener('resize', refreshPositions);
 
     // Animate Loop activation
     observer.observe(document.querySelector('.loop-container'));
@@ -1302,19 +1367,8 @@ function initData() {
         });
     });
 
-    let loopCont = document.querySelector('.loop-container');
-    loopCont.addEventListener('transitionend', (e) => {
-        if(e.propertyName === 'opacity' && loopCont.classList.contains('active')) {
-            document.querySelectorAll('.loop-node').forEach((nn,i)=>setTimeout(()=>nn.classList.add('active'), i*150));
-            document.querySelectorAll('.loop-text').forEach((nn,i)=>setTimeout(()=>nn.classList.add('active'), i*150));
-            document.querySelectorAll('.loop-icon-container').forEach((nn,i)=>setTimeout(()=>nn.classList.add('active'), i*150));
-            setTimeout(()=>{
-                document.querySelectorAll('.loop-line').forEach(ll=>ll.classList.add('active'));
-                lucide.createIcons(); // Initialize the icons in the SVG nodes
-                animateArrow(); // Start the traveling arrow after reveal animation
-            }, 1200);
-        }
-    });
+
+
 }
 
 function initDrawings() {
@@ -1561,7 +1615,8 @@ function initMap() {
         });
     });
 
-    document.getElementById('reset-map-btn').addEventListener('click', () => { zoomedRoom=null; if(typeof playClick === 'function') playClick();});
+    // Double-click dungeon canvas to reset zoom
+    c.addEventListener('dblclick', () => { zoomedRoom = null; });
 
     let t = 0;
     function draw() {
