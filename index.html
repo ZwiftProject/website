@@ -89,14 +89,56 @@ h3 { font-size: clamp(1.2rem, 1.5vw + 1rem, 2rem); margin-bottom: 0.5rem; }
 
 /* Loader */
 #loading-screen {
-  position: fixed; top:0; left:0; width: 100%; height: 100%; background: #000; z-index: 10000;
+  position: fixed; top:0; left:0; width: 100%; height: 100%; 
+  background: radial-gradient(circle at center, #0c0c1f 0%, #04040a 100%); 
+  z-index: 10000;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.5s, transform 0.8s ease-in-out;
+  overflow: hidden;
 }
-#loading-screen.fade-out { opacity: 0; transform: translateY(-100%); pointer-events: none; }
-#loader-text { font-family: var(--font-display); font-size: 2rem; letter-spacing: 4px; margin-top: 20px; min-height: 48px;}
-.progress-bar-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; }
-#loader-progress { height: 100%; width: 0%; background: var(--cyan); transition: width 0.1s; }
+#loading-screen.fade-out { pointer-events: none; transition: opacity 0.8s ease-in; opacity: 0; }
+
+.loader-wrapper { position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center; }
+#loader-canvas { position: absolute; z-index: 2; }
+.loader-ring-svg { position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 1; transform: rotate(-90deg); }
+.loader-ring-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 4; }
+.loader-ring-fill { fill: none; stroke: var(--cyan); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 628; stroke-dashoffset: 628; transition: stroke-dashoffset 0.1s; filter: drop-shadow(0 0 8px var(--cyan)); }
+
+#loader-text { 
+  font-family: var(--font-display); font-size: 2.2rem; letter-spacing: 8px; 
+  margin-top: 40px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);
+  position: relative;
+}
+.glitch-text::before, .glitch-text::after {
+  content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+}
+.glitch-text::before { left: 2px; text-shadow: -2px 0 var(--red); clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+.glitch-text::after { left: -2px; text-shadow: -2px 0 var(--cyan); clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+
+@keyframes glitch-anim {
+  0% { clip: rect(31px, 9999px, 94px, 0); }
+  20% { clip: rect(62px, 9999px, 42px, 0); }
+  40% { clip: rect(16px, 9999px, 78px, 0); }
+  60% { clip: rect(87px, 9999px, 12px, 0); }
+  80% { clip: rect(53px, 9999px, 86px, 0); }
+  100% { clip: rect(24px, 9999px, 68px, 0); }
+}
+@keyframes glitch-anim2 {
+  0% { clip: rect(12px, 9999px, 56px, 0); }
+  20% { clip: rect(89px, 9999px, 24px, 0); }
+  40% { clip: rect(45px, 9999px, 92px, 0); }
+  60% { clip: rect(33px, 9999px, 15px, 0); }
+  80% { clip: rect(71px, 9999px, 49px, 0); }
+  100% { clip: rect(2px, 9999px, 81px, 0); }
+}
+
+/* Geometric Iris Transition */
+.iris-overlay {
+  position: fixed; top: 50%; left: 50%; width: 300vmax; height: 300vmax;
+  background: #000; border-radius: 50%; z-index: 10001;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none; opacity: 0; transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s;
+}
+.iris-active { opacity: 1; transform: translate(-50%, -50%) scale(0); }
 
 /* Scroll Anim Classes */
 .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: opacity, transform; }
@@ -380,10 +422,16 @@ footer { position: relative; padding: 120px 20px; text-align: center; overflow: 
     </div>
 
     <div id="loading-screen">
-        <canvas id="loader-canvas" width="200" height="200"></canvas>
-        <div id="loader-text"></div>
-        <div class="progress-bar-container"><div id="loader-progress"></div></div>
+        <div class="loader-wrapper">
+            <svg class="loader-ring-svg" viewBox="0 0 210 210">
+                <circle class="loader-ring-bg" cx="105" cy="105" r="100"></circle>
+                <circle id="loader-ring-fill" class="loader-ring-fill" cx="105" cy="105" r="100"></circle>
+            </svg>
+            <canvas id="loader-canvas" width="160" height="160"></canvas>
+        </div>
+        <div id="loader-text" class="glitch-text" data-text="GEOSHOT">GEOSHOT</div>
     </div>
+    <div id="iris-overlay" class="iris-overlay"></div>
 
     <canvas id="bg-grid-canvas"></canvas>
 
@@ -990,46 +1038,100 @@ document.addEventListener("DOMContentLoaded", () => {
 function initLoader() {
     const canvas = document.getElementById('loader-canvas');
     const ctx = canvas.getContext('2d');
-    const textEl = document.getElementById('loader-text');
-    const prog = document.getElementById('loader-progress');
-    let rot = 0;
+    const ringFill = document.getElementById('loader-ring-fill');
+    const iris = document.getElementById('iris-overlay');
     const cw = canvas.width, ch = canvas.height;
     
-    let chars = "GEOSHOT".split("");
-    let displayedText = "";
-    let idx = 0;
+    let progress = 0;
+    let targetProgress = 0;
+    let shapes = [];
     
-    let textInterval = setInterval(() => {
-        if(idx < chars.length) {
-            displayedText += chars[idx++];
-            textEl.innerText = displayedText;
-            prog.style.width = (idx / chars.length * 100) + '%';
-        } else {
-            clearInterval(textInterval);
-            setTimeout(() => {
-                document.getElementById('loading-screen').classList.add('fade-out');
-            }, 600); // 1.5s total approx
+    // Define shapes as 12 points each for smooth morphing
+    const createShape = (sides, radius, offset = 0) => {
+        let pts = [];
+        for(let i=0; i<12; i++) {
+            let angle = (Math.PI * 2 / sides) * Math.floor(i * sides / 12) + offset;
+            pts.push({ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius });
         }
-    }, 120);
+        return pts;
+    };
+
+    const triangle = createShape(3, 45, -Math.PI/2);
+    const square = createShape(4, 45, Math.PI/4);
+    const circle = createShape(12, 45);
+    const hexagon = createShape(6, 45);
+    const plus = [];
+    for(let i=0; i<12; i++) {
+        let a = (Math.PI * 2 / 12) * i;
+        let r = (i % 3 === 0) ? 50 : 20;
+        plus.push({ x: Math.cos(a)*r, y: Math.sin(a)*r });
+    }
+    const arrow = []; // Special game shape
+    const ap = [{x:50,y:0}, {x:-30,y:30}, {x:-15,y:0}, {x:-30,y:-30}];
+    for(let i=0; i<12; i++) arrow.push(ap[Math.floor(i/3)]);
+
+    const shapeSequence = [triangle, square, circle, plus, hexagon, arrow];
+    let currentShapeIdx = 0;
+    let morphFactor = 0;
 
     function draw() {
+        if (progress >= 100) return;
         ctx.clearRect(0,0,cw,ch);
+        
+        // Update progress
+        if (targetProgress < 100) targetProgress += 0.4;
+        progress += (targetProgress - progress) * 0.1;
+        
+        // Update ring
+        const dashOffset = 628 - (progress / 100 * 628);
+        ringFill.style.strokeDashoffset = dashOffset;
+        
+        // Morph logic
+        currentShapeIdx = Math.floor((progress / 100) * (shapeSequence.length - 1));
+        morphFactor = ((progress / 100) * (shapeSequence.length - 1)) % 1;
+        
+        const s1 = shapeSequence[currentShapeIdx];
+        const s2 = shapeSequence[currentShapeIdx + 1] || s1;
+        
         ctx.save();
         ctx.translate(cw/2, ch/2);
-        ctx.rotate(rot);
+        ctx.rotate(progress * 0.05); // Spin while morphing
+        
         ctx.beginPath();
-        ctx.moveTo(30, 0);
-        ctx.lineTo(-20, 20);
-        ctx.lineTo(-10, 0);
-        ctx.lineTo(-20, -20);
+        for(let i=0; i<12; i++) {
+            let x = s1[i].x + (s2[i].x - s1[i].x) * morphFactor;
+            let y = s1[i].y + (s2[i].y - s1[i].y) * morphFactor;
+            if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
         ctx.closePath();
+        
         ctx.fillStyle = '#ffffff';
         ctx.shadowColor = '#ffffff';
         ctx.shadowBlur = 15;
         ctx.fill();
+        
+        // Pulse effect
+        let pulse = 1 + Math.sin(Date.now() * 0.01) * 0.05;
+        ctx.scale(pulse, pulse);
+        
         ctx.restore();
-        rot += 0.05;
-        requestAnimationFrame(draw);
+
+        if (progress < 99.5) {
+            requestAnimationFrame(draw);
+        } else {
+            // Loading Sequence Complete
+            setTimeout(() => {
+                iris.classList.add('iris-active');
+                setTimeout(() => {
+                    document.getElementById('loading-screen').classList.add('fade-out');
+                    setTimeout(() => {
+                        iris.classList.remove('iris-active');
+                        // Trigger page reveals
+                        if (typeof forceRevealVisible === 'function') forceRevealVisible();
+                    }, 1200);
+                }, 400);
+            }, 500);
+        }
     }
     draw();
 }
