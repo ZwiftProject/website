@@ -1,0 +1,14 @@
+# Notion content sync patch - applied manually
+# Branch: feat/notion-content-update
+# Date: 2026-04-14
+
+Changes applied to index.html:
+1. Player: Arrow -> Kite (cyan diamond, losango)
+2. Dungeon Floors: corrected bosses (Pentagon/Hexagon/Heptagon)
+3. Plan.md section: updated with final Notion plan
+4. Pitch MVP: corrected (Triangle + Squared + Pentagon boss)
+5. NEW: Assets/Mockups section with images from Notion
+
+Source pages:
+- https://app.notion.com/p/33c8183b5f658037a015da36a4590f75 (AI Prompt / Plan)
+- https://app.notion.com/p/33e8183b5f6580f3915fc314f0a9382a (Mockups & Assets)
