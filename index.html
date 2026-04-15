@@ -370,10 +370,70 @@ footer { position: relative; padding: 120px 20px; text-align: center; overflow: 
 .md-ul { color:var(--text-muted); padding-left:20px; margin-bottom:12px; }
 .md-ul li { margin-bottom:5px; list-style:none; }
 .md-ul li::before { content:'— '; color:var(--cyan); }
-.md-bold { color:var(--text); font-weight:700; }
-.md-sep { border:none; border-top:1px solid var(--surface-2); margin:24px 0; }
-.section-divider { width:100%; height:1px; background:linear-gradient(90deg, transparent, var(--cyan), transparent); margin:0; opacity:.3; }
 
+/* ---- MOCKUPS GALLERY ---- */
+.mockups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+.mockup-category-title {
+  grid-column: 1 / -1;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--cyan);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+  margin-top: 40px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+.mockup-category-title:first-child { margin-top: 0; }
+.mockup-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  padding: 12px;
+  border-radius: 4px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+.mockup-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--cyan);
+  box-shadow: 0 12px 40px rgba(255,255,255,0.1);
+  z-index: 10;
+}
+.mockup-img-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.mockup-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s;
+}
+.mockup-card:hover .mockup-img-container img {
+  transform: scale(1.1);
+}
+.mockup-info h4 {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: #fff;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+.mockup-info p {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
 
 .upgrade-icon { animation: floatIcon 3s ease-in-out infinite; }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
@@ -805,6 +865,119 @@ dirs.forEach { spawnBullet(from: plus.position, dir: $0) }</code>
   </div>
 </section>
 
+
+<div class="section-divider"></div>
+
+<!-- MOCKUPS -->
+<section id="mockups">
+  <h2 class="orb reveal reveal-wipe">MOCKUPS & ASSETS</h2>
+  <p class="text-center text-muted reveal" style="max-width:600px;margin:0 auto 40px;">Visual reference for the game's identity, from UI flow to geometric entities.</p>
+  
+  <div class="mockups-grid reveal">
+    <!-- UI & Experience -->
+    <div class="mockup-category-title">01. UI & EXPERIENCE</div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/ui_main_menu.png" alt="Main Menu"></div>
+      <div class="mockup-info"><h4>MAIN MENU</h4><p>The geometric portal to the dungeon. Simple, clean, and striking.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/ui_hud.png" alt="In-game HUD"></div>
+      <div class="mockup-info"><h4>HUD DESIGN</h4><p>Vital information at a glance: health, room, and timer.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/ui_upgrade.png" alt="Upgrade Selection"></div>
+      <div class="mockup-info"><h4>UPGRADES</h4><p>Choose your evolution. Two paths, one survivor.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/ui_victory.png" alt="Victory Screen"></div>
+      <div class="mockup-info"><h4>VICTORY</h4><p>The reward for clearing all three geometric floors.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/ui_gameover.png" alt="Game Over"></div>
+      <div class="mockup-info"><h4>GAME OVER</h4><p>Experience is the only thing you take to the next run.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/ui_leaderboard.png" alt="Leaderboard"></div>
+      <div class="mockup-info"><h4>LEADERBOARD</h4><p>Measure your precision against other geometric masters.</p></div>
+    </div>
+
+    <!-- ROOMS -->
+    <div class="mockup-category-title">02. GAMEPLAY ROOMS</div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/room_single.png" alt="Combat Room"></div>
+      <div class="mockup-info"><h4>COMBAT ARENA</h4><p>Standard room layout with doors that lock until cleared.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/room_map.png" alt="Dungeon Map"></div>
+      <div class="mockup-info"><h4>DUNGEON FLOW</h4><p>Visual map of floor progression and room connections.</p></div>
+    </div>
+
+    <!-- ENTITIES -->
+    <div class="mockup-category-title">03. GEOMETRIC ENTITIES</div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_player.png" alt="Player Kite"></div>
+      <div class="mockup-info"><h4>THE KITE (PLAYER)</h4><p>Cyan-glowing diamond. Precise, agile, and deadly.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_triangle.png" alt="Triangle Enemy"></div>
+      <div class="mockup-info"><h4>TRIANGLE</h4><p>The speedster. Closes the gap and strikes with momentum.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_square.png" alt="Square Enemy"></div>
+      <div class="mockup-info"><h4>SQUARE (TANK)</h4><p>High HP, slow movement. Fires heavy, piercing projectiles.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_plus.png" alt="Plus Mini-boss"></div>
+      <div class="mockup-info"><h4>PLUS (+)</h4><p>Mini-boss. Fires in all cardinal directions simultaneously.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_pentagon.png" alt="Pentagon Boss"></div>
+      <div class="mockup-info"><h4>PENTAGON</h4><p>Floor 1 Guardian. A test of survival and accuracy.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_hexagon.png" alt="Hexagon Boss"></div>
+      <div class="mockup-info"><h4>HEXAGON</h4><p>Floor 2 Sentinel. Combines patterns from multiple shapes.</p></div>
+    </div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_heptagon.png" alt="Heptagon Boss"></div>
+      <div class="mockup-info"><h4>HEPTAGON</h4><p>The Final Shape. Floor 3 Ruler. Maximum complexity.</p></div>
+    </div>
+
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_star.png" alt="Star Enemy"></div>
+      <div class="mockup-info"><h4>STAR</h4><p>Elite unit. High-frequency bursts and rapid repositioning.</p></div>
+    </div>
+
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/sprite_crescent.png" alt="Crescent Enemy"></div>
+      <div class="mockup-info"><h4>CRESCENT</h4><p>Distance specialist. Rotates and fires dual projectiles.</p></div>
+    </div>
+
+    <!-- TECHNICAL -->
+    <div class="mockup-category-title">04. TECHNICAL REFERENCE</div>
+    
+    <div class="mockup-card">
+      <div class="mockup-img-container"><img src="assets/mockups/dev_reference_grid.png" alt="Technical Grid"></div>
+      <div class="mockup-info"><h4>GRID REFERENCE</h4><p>Mapping units, collision bounds, and alignment rules.</p></div>
+    </div>
+  </div>
+</section>
+
 <div class="section-divider"></div>
 
 <!-- PLAN.MD -->
@@ -821,76 +994,57 @@ dirs.forEach { spawnBullet(from: plus.position, dir: $0) }</code>
       <hr class="md-sep">
 
       <div class="md-h2">## Conceito do Jogo</div>
-      <p class="md-p">GeoShot é um top-down shooter 2D para iOS em que o jogador controla uma seta dentro de uma dungeon com 3 andares. Os inimigos são formas geométricas, cada uma com comportamentos e estatísticas diferentes. Não existem armas — as balas saem diretamente da seta na direção em que o jogador está a apontar.</p>
-      <p class="md-p">O estilo visual é minimalista e intencional: tudo são formas geométricas puras, sem texturas nem sprites. O jogo é construído em Swift com SpriteKit.</p>
+      <p class="md-p">GeoShot é um top-down shooter 2D para iOS em que o jogador controla uma <span class="md-bold">Kite</span> (losango) dentro de uma dungeon linear de 3 andares. Os inimigos são outras formas geométricas, cada uma com comportamentos únicos. Visual minimalista: apenas formas puras, sem texturas.</p>
+      
+      <div class="md-h2">## Controlos & Mecânicas</div>
+      <ul class="md-ul">
+        <li><span class="md-bold">Joystick Esquerdo</span> — Mover o jogador livremente.</li>
+        <li><span class="md-bold">Botão Direito (Segurar)</span> — Ativa disparo automático contínuo.</li>
+        <li><span class="md-bold">Auto-Aim</span> — A Kite aponta e dispara automaticamente para o inimigo mais próximo.</li>
+      </ul>
+      <p class="md-p">As salas fecham ao entrar. Só abrem após limpar todos os inimigos. Cada limpeza dá escolha entre 2 upgrades aleatórios.</p>
 
-      <div class="md-h2">## Como se Joga</div>
-      <p class="md-p">O jogador usa dois joysticks virtuais:</p>
+      <div class="md-h2">## O Bestiário Geométrico</div>
+      <div class="md-h3">### Inimigos Normais</div>
       <ul class="md-ul">
-        <li><span class="md-bold">Joystick esquerdo</span> — mover o jogador livremente pelo ecrã.</li>
-        <li><span class="md-bold">Joystick direito</span> — apontar a direção. As balas saem automaticamente enquanto o joystick estiver ativo.</li>
+        <li><span class="md-bold">Triangle</span> — Veloz. Persegue o jogador e causa dano de contacto/alcance curto.</li>
+        <li><span class="md-bold">Squared</span> — Lento. Dispara uma bala pesada em direção ao alvo.</li>
+        <li><span class="md-bold">Crescent</span> — Mantém distância e dispara 2 balas enquanto roda.</li>
       </ul>
-      <p class="md-p">O mapa é uma dungeon com 3 andares. Cada andar tem 4–5 salas de combate ligadas por corredores e um boss obrigatório no fim. Quando o jogador entra numa sala, as portas fecham. Só abrem após derrotar todos os inimigos. No fim de cada sala, o jogador recebe uma recompensa aleatória.</p>
-
-      <div class="md-h2">## As Formas</div>
-      <div class="md-h3">### Jogador</div>
+      <div class="md-h3">### Mini-Bosses & Bosses</div>
       <ul class="md-ul">
-        <li><span class="md-bold">Arrow (Seta)</span> — Estatísticas equilibradas. Dispara na direção do joystick direito. Efeito bullet web entre projéteis.</li>
-      </ul>
-      <div class="md-h3">### Inimigos</div>
-      <ul class="md-ul">
-        <li><span class="md-bold">Triangle</span> — Muito rápido, pouca vida. Persegue e tenta fazer contacto. Cor: laranja.</li>
-        <li><span class="md-bold">Plus (+)</span> — Médio. Dispara 4 balas em simultâneo para os 4 lados. Cor: vermelho.</li>
-        <li><span class="md-bold">Square</span> — Muito lento, muita vida. Uma bala pesada em direção ao jogador. Cor: branco.</li>
-        <li><span class="md-bold">Circle</span> — Mantém distância. Bala rápida de longo alcance. Cor: roxo.</li>
-      </ul>
-      <div class="md-h3">### Bosses por Andar</div>
-      <ul class="md-ul">
-        <li><span class="md-bold">Andar 1</span> — Giant Square (HP ×3, dano ×2)</li>
-        <li><span class="md-bold">Andar 2</span> — Mega Plus (dispara para 8 direções)</li>
-        <li><span class="md-bold">Andar 3</span> — Hexagon (boss final — combina todos os ataques, tem fases)</li>
+        <li><span class="md-bold">Plus (+)</span> — Dispara balas nas 4 direções cardeais.</li>
+        <li><span class="md-bold">Star</span> — Elite com bursts rápidos.</li>
+        <li><span class="md-bold">Pentagon (Andar 1)</span> — Boss básico, muita vida.</li>
+        <li><span class="md-bold">Hexagon (Andar 2)</span> — Padrões mistos.</li>
+        <li><span class="md-bold">Heptagon (Boss Final)</span> — Máxima dificuldade em 3 fases.</li>
       </ul>
 
-      <div class="md-h2">## Upgrades</div>
-      <div class="md-h3">### Base (por sala)</div>
+      <div class="md-h2">## Pool de Upgrades</div>
       <ul class="md-ul">
-        <li>+Vida — aumenta a vida máxima</li>
-        <li>+Balas — mais projéteis por tiro</li>
-        <li>+Dano — cada bala causa mais dano</li>
-        <li>+Velocidade — move-se mais depressa</li>
-        <li>+Velocidade de Disparo — cadência maior</li>
-      </ul>
-      <div class="md-h3">### Especiais</div>
-      <ul class="md-ul">
-        <li><span class="md-bold">Escudo</span> — anel geométrico que absorve hits. Cooldown para regenerar.</li>
-        <li><span class="md-bold">Power-Up Temporário</span> — botão no HUD. Tipos: Overdrive, Ghost, Nova, Time Slow, Magnet.</li>
-        <li><span class="md-bold">Ricochete</span> — balas saltam nas paredes uma vez.</li>
-        <li><span class="md-bold">Perfurante</span> — balas atravessam múltiplos inimigos.</li>
-        <li><span class="md-bold">Regeneração</span> — +1 HP a cada 8s sem receber dano.</li>
-        <li><span class="md-bold">Decoy</span> — seta falsa que distrai inimigos por 6s.</li>
+        <li><span class="md-bold">+Vida</span> — Cura ou aumenta HP máximo.</li>
+        <li><span class="md-bold">+Balas</span> — Adiciona projéteis por disparo.</li>
+        <li><span class="md-bold">+Dano</span> — Aumenta a força de cada projétil.</li>
+        <li><span class="md-bold">+Velocidade Disparo</span> — Aumenta a cadência (Fire Rate).</li>
+        <li><span class="md-bold">+Velocidade</span> — Aumenta o movimento da Kite.</li>
+        <li><span class="md-bold">Runner (Raro)</span> — +30% Speed, -10% Fire Rate.</li>
       </ul>
 
-      <div class="md-h2">## Gameplay Loop</div>
-      <p class="md-p" style="font-family:monospace;color:var(--cyan)">Explorar → Entrar sala → Portas fecham → Matar todos → Upgrade → Avançar → Boss de andar → Próximo andar → Boss final</p>
-
-      <div class="md-h2">## Design Visual</div>
+      <div class="md-h2">## Plano Técnico (SpriteKit)</div>
       <ul class="md-ul">
-        <li>Fundo escuro com grid subtil de pontos</li>
-        <li>Personagem: triângulo cyan com efeito bullet web entre balas</li>
-        <li>Inimigos: cada cor é única e imediatamente reconhecível</li>
-        <li>HUD: corações de vida, timer, contador de sala, slots de upgrade</li>
-        <li>Explosões: burst de partículas na cor do inimigo destruído</li>
-        <li>Screen shake ao receber dano</li>
+        <li><span class="md-bold">SKShapeNode</span> para todos os visuais do jogo.</li>
+        <li><span class="md-bold">SKPhysicsBody</span> para gestão de colisões e triggers.</li>
+        <li><span class="md-bold">SKAction</span> para controlar disparo automático e padrões de boss.</li>
+        <li><span class="md-bold">State Machine</span> simples para IA: Idle, Chase, Attack, Dead.</li>
       </ul>
 
-      <div class="md-h2">## MVP</div>
+      <div class="md-h2">## MVP (Scope Reduzido)</div>
       <ul class="md-ul">
-        <li>Arrow player com dual joystick + disparo automático</li>
-        <li>2 tipos de inimigos: Triangle + Plus</li>
-        <li>5 salas lineares + 1 boss (Giant Square)</li>
-        <li>5 upgrades base funcionais</li>
-        <li>HUD simples com vida + indicador de sala</li>
-        <li>Game Over + Victory screen</li>
+        <li>Kite player com movimento e auto-aim.</li>
+        <li>Floor 1 completo (3 salas + Boss Pentagon).</li>
+        <li>Inimigos Triangle e Squared.</li>
+        <li>Upgrades base funcionais.</li>
+        <li>Sistema de portas/lockdown por sala.</li>
       </ul>
     </div>
   </div>
